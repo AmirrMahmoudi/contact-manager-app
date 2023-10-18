@@ -6,7 +6,7 @@ const SearchContact = () => {
       <span
         className="input-group-text"
         id="basic-addon1"
-        style={{ backgroundColor: "purple" }}
+        style={{ backgroundColor: PURPLE }}
       >
         <i className="fas fa-search"></i>
       </span>
@@ -14,11 +14,10 @@ const SearchContact = () => {
         dir="rtl"
         type="text"
         style={{
-          backgroundColor: "gray",
           borderColor: PURPLE,
         }}
         className="form-control"
-        placeholder="جستو جوی مخاطب"
+        placeholder="جستجوی مخاطب"
         aria-label="Search"
         aria-description="basic-addon1"
       />
