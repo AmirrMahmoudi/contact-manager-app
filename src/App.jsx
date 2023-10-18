@@ -1,9 +1,12 @@
+import { BrowserRouter } from "react-router-dom";
 import ContactManagerApp from "./ContactManagerApp";
 
 const App = () => {
   return (
     <>
-      <ContactManagerApp />
+      <BrowserRouter>
+        <ContactManagerApp />
+      </BrowserRouter>
     </>
   );
 };
