@@ -1,7 +1,6 @@
-import Spinner from "../Spinner";
 import { CURRENTLINE, ORANGE, PINK } from "../../helpers/colors";
-import Contact from "./Contact";
 import NotFound from "@assets/no-found.gif";
+import { Contact, Spinner } from "../";
 const Contacts = ({ contacts, loading }) => {
   return (
     <>
