@@ -1,6 +1,9 @@
+/* eslint-disable react/prop-types */
 import { CURRENTLINE, CYAN, ORANGE, PURPLE, RED } from "../../helpers/colors";
 
-const Contact = () => {
+const Contact = ({ contact }) => {
+
+      
   return (
     <div className="col-md-6">
       <div style={{ backgroundColor: CURRENTLINE }} className="card my-2">
@@ -8,7 +11,11 @@ const Contact = () => {
           <div className="row align-items-center d-flex justify-content-around">
             <div className="col-md-4 col-sm-4">
               <img
-                src="https://via.placeholder.com/200"
+                src={
+                  contact.photo
+                    ? contact.photo
+                    : "https://via.placeholder.com/200"
+                }
                 alt="avatar"
                 style={{ border: `1px solid ${PURPLE}` }}
                 className="img-fluid rounded"
@@ -18,17 +25,17 @@ const Contact = () => {
               <ul className="list-group">
                 <li className="list-group-item list-group-item-dark">
                   نام و نام خانوادگی : {"  "}
-                  <span className="fw-bold text-nowrap">امیرحسین محمودی</span>
+                  <span className="fw-bold text-nowrap">
+                    {contact.fullname}
+                  </span>
                 </li>
                 <li className="list-group-item list-group-item-dark">
                   شماره موبایل : {"  "}
-                  <span className="fw-bold">09030714900</span>
+                  <span className="fw-bold">{contact.mobile}</span>
                 </li>
                 <li className="list-group-item list-group-item-dark">
                   آدرس ایمیل : {"  "}
-                  <span className="d-block fw-bold ">
-                    amirhosssein.mahmoudi@gmail.com
-                  </span>
+                  <span className="d-block fw-bold ">{contact.email}</span>
                 </li>
               </ul>
             </div>
@@ -51,6 +58,7 @@ const Contact = () => {
       </div>
     </div>
   );
+  
 };
 
 export default Contact;

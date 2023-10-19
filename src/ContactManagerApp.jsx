@@ -1,5 +1,6 @@
-import { useState } from "react";
-import "./App.css";
+import { useEffect, useState } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
+import axios from "axios";
 import {
   AddContact,
   Contacts,
@@ -7,11 +8,35 @@ import {
   Navbar,
   ViewContact,
 } from "./components";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { getAllContacts, getAllGroups } from "./services/contactService";
+import "./App.css";
 
 const ContactManagerApp = () => {
   const [loading, setLoading] = useState(false);
   const [getContacts, setContacts] = useState([]);
+  const [, setGroups] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        
+        const { data: contactsData } = await getAllContacts();
+        const { data: groupsData } = await getAllGroups();
+
+        setContacts(contactsData);
+        setGroups(groupsData);
+
+        setLoading(false);
+      } catch (err) {
+        console.log(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div className="App">
       <Navbar />

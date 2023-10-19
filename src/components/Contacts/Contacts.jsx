@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { CURRENTLINE, ORANGE, PINK } from "../../helpers/colors";
 import NotFound from "@assets/no-found.gif";
 import { Contact, Spinner } from "../";
