@@ -1,9 +1,8 @@
 /* eslint-disable react/prop-types */
+import { Link } from "react-router-dom";
 import { CURRENTLINE, CYAN, ORANGE, PURPLE, RED } from "../../helpers/colors";
 
 const Contact = ({ contact }) => {
-
-      
   return (
     <div className="col-md-6">
       <div style={{ backgroundColor: CURRENTLINE }} className="card my-2">
@@ -40,10 +39,14 @@ const Contact = ({ contact }) => {
               </ul>
             </div>
             <div className="col-md-1 col-sm-1 d-flex flex-column align-items-center">
-              <button className="btn my-1" style={{ backgroundColor: ORANGE }}>
+              <Link
+                to={`/contacts/${contact.id}`}
+                className="btn my-1"
+                style={{ backgroundColor: ORANGE }}
+              >
                 {" "}
                 <i className="fa fa-eye"></i>
-              </button>
+              </Link>
               <button className="btn my-1" style={{ backgroundColor: CYAN }}>
                 {" "}
                 <i className="fa fa-pen"></i>
@@ -58,7 +61,6 @@ const Contact = ({ contact }) => {
       </div>
     </div>
   );
-  
 };
 
 export default Contact;
