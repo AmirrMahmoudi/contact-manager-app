@@ -26,8 +26,9 @@ import {
 const ContactManagerApp = () => {
   const [loading, setLoading] = useState(false);
   const [forceRender, setForceRender] = useState(false);
-
   const [getContacts, setContacts] = useState([]);
+  const [getFilteredContacts, setFilteredContacts] = useState([]);
+
   const [getGroups, setGroups] = useState([]);
   const [getContact, setContact] = useState({
     fullname: "",
@@ -37,6 +38,8 @@ const ContactManagerApp = () => {
     job: "",
     group: "",
   });
+
+  const [query, setQuery] = useState({ text: "" });
 
   const navigate = useNavigate();
 
@@ -49,6 +52,7 @@ const ContactManagerApp = () => {
         const { data: groupsData } = await getAllGroups();
 
         setContacts(contactsData);
+        setFilteredContacts(contactsData);
         setGroups(groupsData);
 
         setLoading(false);
@@ -151,16 +155,31 @@ const ContactManagerApp = () => {
       setLoading(false);
     }
   };
+  const contactSearch = (event) => {
+    setQuery({ ...query, text: event.target.value });
+    const allContacts = getContacts.filter((contact) => {
+      return contact.fullname
+        .toLowerCase()
+        .includes(event.target.value.toLowerCase());
+    });
 
+    setFilteredContacts(allContacts);
+  };
   return (
     <div className="App">
-      <Navbar />
+      <Navbar query={query} search={contactSearch} />
       <Routes>
         <Route path="/" element={<Navigate to="/contacts" />} />
 
         <Route
           path="/contacts"
-          element={<Contacts contacts={getContacts} loading={loading} confirmDelete={confirm} />}
+          element={
+            <Contacts
+              contacts={getFilteredContacts}
+              loading={loading}
+              confirmDelete={confirm}
+            />
+          }
         />
         <Route
           path="/contacts/add"
