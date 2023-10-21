@@ -9,5 +9,5 @@ export { default as SearchContact } from "./Contacts/SearchContact";
 export { default as ViewContact } from "./Contacts/ViewContact";
 
 /* -- Other Components -- */
-export { default as Navbar } from "./Navbar";
 export { default as Spinner } from "./Spinner";
+export { default as Navbar } from "./Navbar";
