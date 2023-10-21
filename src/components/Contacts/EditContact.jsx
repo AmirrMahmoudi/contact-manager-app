@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import MAN_TAKING_NOTE from "@assets/man-taking-note.png";
 import { COMMENT, ORANGE, PURPLE } from "../../helpers/colors";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -10,7 +11,7 @@ import {
   updateContact,
 } from "../../services/contactService";
 
-const EditContact = () => {
+const EditContact = ({ forceRender, setForceRender }) => {
   const { contactId } = useParams();
   const navigate = useNavigate();
 
@@ -67,6 +68,7 @@ const EditContact = () => {
       setState({ ...state, loading: false });
 
       if (data) {
+        setForceRender(!forceRender);
         navigate("/contacts");
       }
     } catch (err) {

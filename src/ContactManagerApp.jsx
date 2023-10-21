@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
-// import axios from "axios";
+import { confirmAlert } from "react-confirm-alert";
 import {
   AddContact,
   Contacts,
@@ -12,8 +12,16 @@ import {
   createContact,
   getAllContacts,
   getAllGroups,
+  deleteContact,
 } from "./services/contactService";
 import "./App.css";
+import {
+  COMMENT,
+  CURRENTLINE,
+  FOREGROUND,
+  PURPLE,
+  YELLOW,
+} from "./helpers/colors";
 
 const ContactManagerApp = () => {
   const [loading, setLoading] = useState(false);
@@ -89,6 +97,61 @@ const ContactManagerApp = () => {
     setContact({ ...getContact, [event.target.name]: event.target.value });
   };
 
+  const confirm = (contactId, contactFullname) => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div
+            dir="rtl"
+            style={{
+              backgroundColor: CURRENTLINE,
+              border: `1px solid ${PURPLE}`,
+              borderRadius: "1em",
+            }}
+            className="p-4"
+          >
+            <h1 style={{ color: YELLOW }}>پاک کردن مخاطب</h1>
+            <p style={{ color: FOREGROUND }}>
+              مطمئنی که میخوای مخاطب {contactFullname} رو پاک کنی
+            </p>
+            <button
+              onClick={() => {
+                removeContact(contactId);
+                onClose();
+              }}
+              className="btn mx-2"
+              style={{ backgroundColor: PURPLE }}
+            >
+              مطمئن هستم
+            </button>
+            <button
+              onClick={onClose}
+              className="btn"
+              style={{ backgroundColor: COMMENT }}
+            >
+              انصراف
+            </button>
+          </div>
+        );
+      },
+    });
+  };
+
+  const removeContact = async (contactId) => {
+    try {
+      setLoading(true);
+      const response = await deleteContact(contactId);
+      if (response) {
+        const { data: contactData } = await getAllContacts();
+        setContacts(contactData);
+        setLoading(false);
+      }
+    } catch (err) {
+      console.log(err.message);
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="App">
       <Navbar />
@@ -97,7 +160,7 @@ const ContactManagerApp = () => {
 
         <Route
           path="/contacts"
-          element={<Contacts contacts={getContacts} loading={loading} />}
+          element={<Contacts contacts={getContacts} loading={loading} confirmDelete={confirm} />}
         />
         <Route
           path="/contacts/add"
@@ -112,7 +175,15 @@ const ContactManagerApp = () => {
           }
         />
         <Route path="/contacts/:contactId" element={<ViewContact />} />
-        <Route path="/contacts/edit/:contactId" element={<EditContact />} />
+        <Route
+          path="/contacts/edit/:contactId"
+          element={
+            <EditContact
+              forceRender={forceRender}
+              setForceRender={setForceRender}
+            />
+          }
+        />
       </Routes>
 
       {/* <Contacts contacts={getContacts} loading={loading} /> */}

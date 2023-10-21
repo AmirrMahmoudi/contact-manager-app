@@ -3,7 +3,7 @@ import { CURRENTLINE, ORANGE, PINK } from "../../helpers/colors";
 import NotFound from "@assets/no-found.gif";
 import { Contact, Spinner } from "../";
 import { Link } from "react-router-dom";
-const Contacts = ({ contacts, loading }) => {
+const Contacts = ({ contacts, loading, confirmDelete }) => {
   return (
     <>
       <section className="container">
@@ -30,7 +30,13 @@ const Contacts = ({ contacts, loading }) => {
         <section className="container">
           <div className="row">
             {contacts.length > 0 ? (
-              contacts.map((c) => <Contact key={c.id} contact={c} />)
+              contacts.map((c) => (
+                <Contact
+                  key={c.id}
+                  contact={c}
+                  confirmDelete={() => confirmDelete(c.id, c.fullname)}
+                />
+              ))
             ) : (
               <div
                 className="text-center py-5"
