@@ -130,18 +130,32 @@ const ContactManagerApp = () => {
   };
 
   const removeContact = async (contactId) => {
-    try {
-      setLoading(true);
-      const response = await deleteContact(contactId);
-      if (response) {
-        const { data: contactData } = await getAllContacts();
+    /**
+     * 1- forceRender => setForceRender
+     * 2- Server Request
+     * 3- Delete Local State
+     * 4- Delete State Before Server Request
+     */
 
-        setContacts(contactData);
-        setLoading(false);
+    const allContacts = [...contacts];
+    try {
+      // Contacts Copy
+
+      const updatedContacts = contacts.filter((c) => c.id !== contactId);
+      setContacts(updatedContacts);
+      setFilteredContacts(updatedContacts);
+
+      // Sending delete request to server
+      const { status } = await deleteContact(contactId);
+
+      if (status !== 200) {
+        setContacts(allContacts);
+        setFilteredContacts(allContacts);
       }
     } catch (err) {
+      setFilteredContacts(allContacts);
+      setContacts(allContacts);
       console.log(err.message);
-      setLoading(false);
     }
   };
   const contactSearch = (event) => {
@@ -151,7 +165,6 @@ const ContactManagerApp = () => {
         .toLowerCase()
         .includes(event.target.value.toLowerCase());
     });
-
     setFilteredContacts(allContacts);
   };
   return (
@@ -160,8 +173,9 @@ const ContactManagerApp = () => {
         loading,
         setLoading,
         contact,
+        setFilteredContacts,
         contactQuery,
-        setContact,
+        setContacts,
         contacts,
         filteredContacts,
         groups,

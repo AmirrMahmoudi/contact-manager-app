@@ -3,80 +3,83 @@ import MAN_TAKING_NOTE from "@assets/man-taking-note.png";
 import { COMMENT, ORANGE, PURPLE } from "../../helpers/colors";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Spinner } from "../";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
-import {
-  getContact,
-  getAllGroups,
-  updateContact,
-} from "../../services/contactService";
+import { getContact, updateContact } from "../../services/contactService";
+import { ContactContext } from "../../context/contactContext";
 
-const EditContact = ({ forceRender, setForceRender }) => {
+const EditContact = () => {
   const { contactId } = useParams();
+  const {
+    contacts,
+    setContacts,
+    loading,
+    setLoading,
+    groups,
+    setFilteredContacts,
+  } = useContext(ContactContext);
   const navigate = useNavigate();
 
-  const [state, setState] = useState({
-    loading: false,
-    contact: {
-      fullname: "",
-      photo: "",
-      mobile: "",
-      email: "",
-      job: "",
-      group: "",
-    },
-    groups: [],
-  });
+  const [contact, setContact] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setState({ ...state, loading: true });
+        setLoading(true);
         const { data: contactData } = await getContact(contactId);
-        const { data: groupsData } = await getAllGroups();
-
-        setState({
-          ...state,
-          loading: false,
-          contact: contactData,
-          groups: groupsData,
-        });
+        setLoading(false);
+        setContact(contactData);
       } catch (err) {
         console.log(err);
-
-        setState({ ...state, loading: false });
+        setLoading(false);
       }
     };
     fetchData();
   }, []);
 
-  const setContactInfo = (event) => {
-    setState({
-      ...state,
-      contact: {
-        ...state.contact,
-        [event.target.name]: event.target.value,
-      },
+  const onContactChange = (event) => {
+    setContact({
+      ...contact,
+
+      [event.target.name]: event.target.value,
     });
   };
 
   const submitForm = async (event) => {
     event.preventDefault();
     try {
-      setState({ ...state, loading: true });
-      const { data } = await updateContact(state.contact, contactId);
-      setState({ ...state, loading: false });
+      setLoading(true);
+      //   Copy
+      //   Update State
+      //   Send Request
+      //   status === 200 do nothing
+      //   status == error => setState(copyState)
+      const { data, status } = await updateContact(contact, contactId);
 
-      if (data) {
-        setForceRender(!forceRender);
+      /** NOTE
+       * 1- forceRender => setForceRender(true)
+       * 2- Send request server
+       * 3-  Update local state
+       * 4- Update local state before sending request to server
+       */
+
+      if (status === 200) {
+        setLoading(false);
+
+        const allContacts = [...contacts];
+        const contactIndex = allContacts.findIndex((c) => c.id === +contactId);
+        console.log(allContacts[contactIndex]);
+        allContacts[contactIndex] = { ...data };
+        console.log(allContacts[contactIndex]);
+        setContacts(allContacts);
+        setFilteredContacts(allContacts);
         navigate("/contacts");
       }
     } catch (err) {
-      console.log(err.message);
-      setState({ ...state, loading: false });
+      console.log(err);
+      setLoading(false);
     }
   };
-  const { loading, contact, groups } = state;
   return (
     <>
       {loading ? (
@@ -104,7 +107,7 @@ const EditContact = ({ forceRender, setForceRender }) => {
                         type="text"
                         className="form-control"
                         value={contact.fullname}
-                        onChange={setContactInfo}
+                        onChange={onContactChange}
                         required={true}
                         placeholder="نام و نام خانوادگی"
                       />
@@ -114,7 +117,7 @@ const EditContact = ({ forceRender, setForceRender }) => {
                         name="photo"
                         type="text"
                         value={contact.photo}
-                        onChange={setContactInfo}
+                        onChange={onContactChange}
                         className="form-control"
                         required={true}
                         placeholder="آدرس تصویر"
@@ -126,7 +129,7 @@ const EditContact = ({ forceRender, setForceRender }) => {
                         type="number"
                         className="form-control"
                         value={contact.mobile}
-                        onChange={setContactInfo}
+                        onChange={onContactChange}
                         required={true}
                         placeholder="شماره موبایل"
                       />
@@ -137,7 +140,7 @@ const EditContact = ({ forceRender, setForceRender }) => {
                         type="email"
                         className="form-control"
                         value={contact.email}
-                        onChange={setContactInfo}
+                        onChange={onContactChange}
                         required={true}
                         placeholder="آدرس ایمیل"
                       />
@@ -148,7 +151,7 @@ const EditContact = ({ forceRender, setForceRender }) => {
                         type="text"
                         className="form-control"
                         value={contact.job}
-                        onChange={setContactInfo}
+                        onChange={onContactChange}
                         required={true}
                         placeholder="شغل"
                       />
@@ -157,7 +160,7 @@ const EditContact = ({ forceRender, setForceRender }) => {
                       <select
                         name="group"
                         value={contact.group}
-                        onChange={setContactInfo}
+                        onChange={onContactChange}
                         required={true}
                         className="form-control"
                       >
