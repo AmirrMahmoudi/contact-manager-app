@@ -1,8 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert";
+import { useImmer } from "use-immer";
+
 import _ from "lodash";
 
+import { ContactContext } from "./context/contactContext";
 import {
   AddContact,
   Contacts,
@@ -11,27 +14,25 @@ import {
   ViewContact,
 } from "./components";
 import {
-  createContact,
   getAllContacts,
   getAllGroups,
+  createContact,
   deleteContact,
 } from "./services/contactService";
 import "./App.css";
 import {
-  COMMENT,
   CURRENTLINE,
   FOREGROUND,
   PURPLE,
   YELLOW,
+  COMMENT,
 } from "./helpers/colors";
-import { ContactContext } from "./context/contactContext";
 
 const ContactManagerApp = () => {
-  const [loading, setLoading] = useState(false);
-  const [contacts, setContacts] = useState([]);
-  const [filteredContacts, setFilteredContacts] = useState([]);
-  const [groups, setGroups] = useState([]);
-  const [contact, setContact] = useState({});
+  const [loading, setLoading] = useImmer(false);
+  const [contacts, setContacts] = useImmer([]);
+  const [filteredContacts, setFilteredContacts] = useImmer([]);
+  const [groups, setGroups] = useImmer([]);
 
   const navigate = useNavigate();
 
@@ -58,35 +59,26 @@ const ContactManagerApp = () => {
   }, []);
 
   const createContactForm = async (values) => {
-    // event.preventDefault();
     try {
-      setLoading((prevLoading) => !prevLoading);
+      setLoading((draft) => !draft);
 
       const { status, data } = await createContact(values);
 
-      /** NOTE
-       * 1- Render => forceRender,setForceRender
-       * 2- setContact(data)
-       */
-
       if (status === 201) {
-        const allContacts = [...contacts, data];
+        setContacts((draft) => {
+          draft.push(data);
+        });
+        setFilteredContacts((draft) => {
+          draft.push(data);
+        });
 
-        setContacts(allContacts);
-        setFilteredContacts(allContacts);
-
-        // setContact({});
         setLoading((prevLoading) => !prevLoading);
         navigate("/contacts");
       }
     } catch (err) {
-      console.log(err.message());
+      console.log(err.message);
       setLoading((prevLoading) => !prevLoading);
     }
-  };
-
-  const onContactChange = (event) => {
-    setContact({ ...contact, [event.target.name]: event.target.value });
   };
 
   const confirmDelete = (contactId, contactFullname) => {
@@ -104,7 +96,7 @@ const ContactManagerApp = () => {
           >
             <h1 style={{ color: YELLOW }}>پاک کردن مخاطب</h1>
             <p style={{ color: FOREGROUND }}>
-              مطمئنی که میخوای مخاطب {contactFullname} رو پاک کنی
+              مطمئنی که میخوای مخاطب {contactFullname} رو پاک کنی ؟
             </p>
             <button
               onClick={() => {
@@ -130,55 +122,45 @@ const ContactManagerApp = () => {
   };
 
   const removeContact = async (contactId) => {
-    /**
-     * 1- forceRender => setForceRender
-     * 2- Server Request
-     * 3- Delete Local State
-     * 4- Delete State Before Server Request
-     */
-
-    const allContacts = [...contacts];
+    const contactsBackup = [...contacts];
     try {
-      // Contacts Copy
+      setContacts((draft) => draft.filter((c) => c.id !== contactId));
+      setFilteredContacts((draft) => draft.filter((c) => c.id !== contactId));
 
-      const updatedContacts = contacts.filter((c) => c.id !== contactId);
-      setContacts(updatedContacts);
-      setFilteredContacts(updatedContacts);
-
-      // Sending delete request to server
       const { status } = await deleteContact(contactId);
 
       if (status !== 200) {
-        setContacts(allContacts);
-        setFilteredContacts(allContacts);
+        setContacts(contactsBackup);
+        setFilteredContacts(contactsBackup);
       }
     } catch (err) {
-      setFilteredContacts(allContacts);
-      setContacts(allContacts);
       console.log(err.message);
+
+      setContacts(contactsBackup);
+      setFilteredContacts(contactsBackup);
     }
   };
+
   const contactSearch = _.debounce((query) => {
     if (!query) return setFilteredContacts([...contacts]);
-    setFilteredContacts(
-      contacts.filter((contact) => {
-        return contact.fullname.toLowerCase().includes(query.toLowerCase());
-      })
+
+    setFilteredContacts((draft) =>
+      draft.filter((c) =>
+        c.fullname.toLowerCase().includes(query.toLowerCase())
+      )
     );
   }, 1000);
+
   return (
     <ContactContext.Provider
       value={{
         loading,
         setLoading,
-        contact,
-        setFilteredContacts,
-        // contactQuery,
         setContacts,
+        setFilteredContacts,
         contacts,
         filteredContacts,
         groups,
-        onContactChange,
         deleteContact: confirmDelete,
         createContact: createContactForm,
         contactSearch,
@@ -188,14 +170,11 @@ const ContactManagerApp = () => {
         <Navbar />
         <Routes>
           <Route path="/" element={<Navigate to="/contacts" />} />
-
-          <Route path="/contacts" element={<Contacts />} />
-          <Route path="/contacts/add" element={<AddContact />} />
-          <Route path="/contacts/:contactId" element={<ViewContact />} />
-          <Route path="/contacts/edit/:contactId" element={<EditContact />} />
+          <Route path="contacts" element={<Contacts />} />
+          <Route path="contacts/add" element={<AddContact />} />
+          <Route path="contacts/:contactId" element={<ViewContact />} />
+          <Route path="contacts/edit/:contactId" element={<EditContact />} />
         </Routes>
-
-        {/* <Contacts contacts={contacts} loading={loading} /> */}
       </div>
     </ContactContext.Provider>
   );
