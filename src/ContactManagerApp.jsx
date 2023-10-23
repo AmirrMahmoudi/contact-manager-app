@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert";
+import _ from "lodash";
+
 import {
   AddContact,
   Contacts,
@@ -156,21 +158,14 @@ const ContactManagerApp = () => {
       console.log(err.message);
     }
   };
-  let filterTimeout;
-  const contactSearch = (query) => {
-    clearTimeout(filterTimeout);
-
+  const contactSearch = _.debounce((query) => {
     if (!query) return setFilteredContacts([...contacts]);
-
-    console.log(query);
-    filterTimeout = setTimeout(() => {
-      setFilteredContacts(
-        contacts.filter((contact) => {
-          return contact.fullname.toLowerCase().includes(query.toLowerCase());
-        })
-      );
-    }, 1000);
-  };
+    setFilteredContacts(
+      contacts.filter((contact) => {
+        return contact.fullname.toLowerCase().includes(query.toLowerCase());
+      })
+    );
+  }, 1000);
   return (
     <ContactContext.Provider
       value={{
