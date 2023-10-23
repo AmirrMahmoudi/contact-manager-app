@@ -57,12 +57,12 @@ const ContactManagerApp = () => {
     fetchData();
   }, []);
 
-  const createContactForm = async (event) => {
-    event.preventDefault();
+  const createContactForm = async (values) => {
+    // event.preventDefault();
     try {
       setLoading((prevLoading) => !prevLoading);
 
-      const { status, data } = await createContact(contact);
+      const { status, data } = await createContact(values);
 
       /** NOTE
        * 1- Render => forceRender,setForceRender
@@ -75,7 +75,7 @@ const ContactManagerApp = () => {
         setContacts(allContacts);
         setFilteredContacts(allContacts);
 
-        setContact({});
+        // setContact({});
         setLoading((prevLoading) => !prevLoading);
         navigate("/contacts");
       }
