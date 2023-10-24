@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert";
 import { useImmer } from "use-immer";
+import { ToastContainer, toast } from "react-toastify";
 
 import _ from "lodash";
 
@@ -66,6 +67,7 @@ const ContactManagerApp = () => {
 
       if (status === 201) {
         setContacts((draft) => {
+          toast.success("مخاطب با موفقیت ساخته شد", { icon: "🚀" });
           draft.push(data);
         });
         setFilteredContacts((draft) => {
@@ -129,6 +131,8 @@ const ContactManagerApp = () => {
 
       const { status } = await deleteContact(contactId);
 
+      toast.error("مخاطب با موفقیت حذف شد");
+
       if (status !== 200) {
         setContacts(contactsBackup);
         setFilteredContacts(contactsBackup);
@@ -167,6 +171,7 @@ const ContactManagerApp = () => {
       }}
     >
       <div className="App">
+        <ToastContainer rtl={true} position="top-right" theme="colored" />
         <Navbar />
         <Routes>
           <Route path="/" element={<Navigate to="/contacts" />} />

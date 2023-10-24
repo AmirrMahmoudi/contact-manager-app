@@ -1,27 +1,25 @@
-import MAN_TAKING_NOTE from "@assets/man-taking-note.png";
-import { COMMENT, ORANGE, PURPLE } from "../../helpers/colors";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { Spinner } from "../";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 
-import { getContact, updateContact } from "../../services/contactService";
-import { ContactContext } from "../../context/contactContext";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ErrorMessage, Field, Form, Formik } from "formik";
+import { useImmer } from "use-immer";
+import { toast } from "react-toastify";
+
+import { ContactContext } from "../../context/contactContext";
+import { getContact, updateContact } from "../../services/contactService";
+import { Spinner } from "../";
+import { COMMENT, ORANGE, PURPLE } from "../../helpers/colors";
 import { contactSchema } from "../../validations/contactValidation";
+import MAN_TAKING_NOTE from "@assets/man-taking-note.png";
 
 const EditContact = () => {
   const { contactId } = useParams();
-  const {
-    contacts,
-    setContacts,
-    loading,
-    setLoading,
-    groups,
-    setFilteredContacts,
-  } = useContext(ContactContext);
+  const { setContacts, setFilteredContacts, loading, setLoading, groups } =
+    useContext(ContactContext);
+
   const navigate = useNavigate();
 
-  const [contact, setContact] = useState({});
+  const [contact, setContact] = useImmer({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,18 +41,25 @@ const EditContact = () => {
   const submitForm = async (values) => {
     try {
       setLoading(true);
-
       const { data, status } = await updateContact(values, contactId);
 
       if (status === 200) {
         setLoading(false);
 
-        const allContacts = [...contacts];
-        const contactIndex = allContacts.findIndex((c) => c.id === +contactId);
-        allContacts[contactIndex] = { ...data };
+        toast.info("مخاطب با موفقیت ویرایش شد", { icon: "✅" });
 
-        setContacts(allContacts);
-        setFilteredContacts(allContacts);
+        setContacts((draft) => {
+          const contactIndex = draft.findIndex(
+            (c) => c.id === parseInt(contactId)
+          );
+          draft[contactIndex] = { ...data };
+        });
+        setFilteredContacts((draft) => {
+          const contactIndex = draft.findIndex(
+            (c) => c.id === parseInt(contactId)
+          );
+          draft[contactIndex] = { ...data };
+        });
 
         navigate("/contacts");
       }
@@ -63,6 +68,7 @@ const EditContact = () => {
       setLoading(false);
     }
   };
+
   return (
     <>
       {loading ? (
@@ -72,11 +78,12 @@ const EditContact = () => {
           <section className="p-3">
             <div className="container">
               <div className="row my-2">
-                <p className="h4 fw-bold" style={{ color: ORANGE }}>
-                  ویرایش مخاطب
-                </p>
+                <div className="col text-center">
+                  <p className="h4 fw-bold" style={{ color: ORANGE }}>
+                    ویرایش مخاطب
+                  </p>
+                </div>
               </div>
-
               <hr style={{ backgroundColor: ORANGE }} />
               <div
                 className="row p-2 w-75 mx-auto align-items-center"
@@ -93,59 +100,77 @@ const EditContact = () => {
                     <Form>
                       <div className="mb-2">
                         <Field
-                          type="text"
                           name="fullname"
+                          type="text"
                           className="form-control"
                           placeholder="نام و نام خانوادگی"
                         />
-                        <span className="text-danger">
-                          <ErrorMessage name="fullname" />
-                        </span>
+                        <ErrorMessage
+                          name="fullname"
+                          render={(msg) => (
+                            <div className="text-danger">{msg}</div>
+                          )}
+                        />
                       </div>
-
                       <div className="mb-2">
                         <Field
-                          type="text"
                           name="photo"
+                          type="text"
                           className="form-control"
                           placeholder="آدرس تصویر"
                         />
-                        <span className="text-danger">
-                          <ErrorMessage name="photo" />
-                        </span>
+
+                        <ErrorMessage
+                          name="photo"
+                          render={(msg) => (
+                            <div className="text-danger">{msg}</div>
+                          )}
+                        />
                       </div>
                       <div className="mb-2">
                         <Field
-                          type="number"
                           name="mobile"
+                          type="number"
                           className="form-control"
                           placeholder="شماره موبایل"
                         />
-                        <span className="text-danger">
-                          <ErrorMessage name="mobile" />
-                        </span>
+
+                        <ErrorMessage
+                          name="mobile"
+                          render={(msg) => (
+                            <div className="text-danger">{msg}</div>
+                          )}
+                        />
                       </div>
                       <div className="mb-2">
                         <Field
-                          type="email"
                           name="email"
+                          type="email"
                           className="form-control"
                           placeholder="آدرس ایمیل"
                         />
-                        <span className="text-danger">
-                          <ErrorMessage name="email" />
-                        </span>
+
+                        <ErrorMessage
+                          name="email"
+                          render={(msg) => (
+                            <div className="text-danger">{msg}</div>
+                          )}
+                        />
                       </div>
                       <div className="mb-2">
                         <Field
-                          type="text"
                           name="job"
+                          type="text"
                           className="form-control"
                           placeholder="شغل"
                         />
-                        <span className="text-danger">
-                          <ErrorMessage name="job" />
-                        </span>
+
+                        <ErrorMessage
+                          name="job"
+                          render={(msg) => (
+                            <div className="text-danger">{msg}</div>
+                          )}
+                        />
                       </div>
                       <div className="mb-2">
                         <Field
@@ -154,7 +179,6 @@ const EditContact = () => {
                           className="form-control"
                         >
                           <option value="">انتخاب گروه</option>
-
                           {groups.length > 0 &&
                             groups.map((group) => (
                               <option key={group.id} value={group.id}>
@@ -162,18 +186,21 @@ const EditContact = () => {
                               </option>
                             ))}
                         </Field>
-                        <span className="text-danger">
-                          <ErrorMessage name="group" />
-                        </span>
+
+                        <ErrorMessage
+                          name="group"
+                          render={(msg) => (
+                            <div className="text-danger">{msg}</div>
+                          )}
+                        />
                       </div>
                       <div className="mx-2">
-                        <button
+                        <input
                           type="submit"
-                          className="btn mx-2"
+                          className="btn"
                           style={{ backgroundColor: PURPLE }}
-                        >
-                          ویرایش مخاطب{" "}
-                        </button>
+                          value="ویرایش مخاطب"
+                        />
                         <Link
                           to={"/contacts"}
                           className="btn mx-2"
