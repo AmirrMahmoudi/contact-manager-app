@@ -2,9 +2,9 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { Form, Formik, Field, ErrorMessage } from "formik";
 
+import { Spinner } from "../";
 import { contactSchema } from "../../validations/contactValidation";
 import { ContactContext } from "../../context/contactContext";
-import { Spinner } from "../";
 import { COMMENT, GREEN, PURPLE } from "../../helpers/colors";
 import MAN_TAKING_NOTE from "@assets/man-taking-note.png";
 const AddContact = () => {

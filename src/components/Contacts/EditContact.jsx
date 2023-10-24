@@ -3,13 +3,13 @@ import { useContext, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useImmer } from "use-immer";
-// import { toast } from "react-toastify";
-import toast from "react-hot-toast";
-import { ContactContext } from "../../context/contactContext";
-import { getContact, updateContact } from "../../services/contactService";
+import { toast } from "react-toastify";
+
 import { Spinner } from "../";
-import { COMMENT, ORANGE, PURPLE } from "../../helpers/colors";
+import { getContact, updateContact } from "../../services/contactService";
+import { ContactContext } from "../../context/contactContext";
 import { contactSchema } from "../../validations/contactValidation";
+import { COMMENT, ORANGE, PURPLE } from "../../helpers/colors";
 import MAN_TAKING_NOTE from "@assets/man-taking-note.png";
 
 const EditContact = () => {
@@ -46,7 +46,7 @@ const EditContact = () => {
       if (status === 200) {
         setLoading(false);
 
-        toast.success("مخاطب با موفقیت ویرایش شد", { icon: "✅" });
+        toast.info("مخاطب با موفقیت ویرایش شد", { icon: "✅" });
 
         setContacts((draft) => {
           const contactIndex = draft.findIndex(

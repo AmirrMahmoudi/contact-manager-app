@@ -2,8 +2,7 @@ import { useEffect } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert";
 import { useImmer } from "use-immer";
-// import { ToastContainer, toast } from "react-toastify";
-import toast, { Toaster } from "react-hot-toast";
+import { ToastContainer, toast } from "react-toastify";
 
 import _ from "lodash";
 
@@ -21,6 +20,7 @@ import {
   createContact,
   deleteContact,
 } from "./services/contactService";
+
 import "./App.css";
 import {
   CURRENTLINE,
@@ -172,8 +172,7 @@ const ContactManagerApp = () => {
       }}
     >
       <div className="App">
-        {/* <ToastContainer rtl={true} position="top-right" theme="colored" /> */}
-        <Toaster />
+        <ToastContainer rtl={true} position="top-right" theme="colored" />
 
         <Navbar />
         <Routes>
