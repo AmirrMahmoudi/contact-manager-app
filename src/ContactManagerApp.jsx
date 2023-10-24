@@ -2,7 +2,8 @@ import { useEffect } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert";
 import { useImmer } from "use-immer";
-import { ToastContainer, toast } from "react-toastify";
+// import { ToastContainer, toast } from "react-toastify";
+import toast, { Toaster } from "react-hot-toast";
 
 import _ from "lodash";
 
@@ -171,7 +172,9 @@ const ContactManagerApp = () => {
       }}
     >
       <div className="App">
-        <ToastContainer rtl={true} position="top-right" theme="colored" />
+        {/* <ToastContainer rtl={true} position="top-right" theme="colored" /> */}
+        <Toaster />
+
         <Navbar />
         <Routes>
           <Route path="/" element={<Navigate to="/contacts" />} />

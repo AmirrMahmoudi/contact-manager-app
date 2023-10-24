@@ -3,8 +3,8 @@ import { useContext, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useImmer } from "use-immer";
-import { toast } from "react-toastify";
-
+// import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { ContactContext } from "../../context/contactContext";
 import { getContact, updateContact } from "../../services/contactService";
 import { Spinner } from "../";
@@ -46,7 +46,7 @@ const EditContact = () => {
       if (status === 200) {
         setLoading(false);
 
-        toast.info("مخاطب با موفقیت ویرایش شد", { icon: "✅" });
+        toast.success("مخاطب با موفقیت ویرایش شد", { icon: "✅" });
 
         setContacts((draft) => {
           const contactIndex = draft.findIndex(
