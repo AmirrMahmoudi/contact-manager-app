@@ -10,5 +10,5 @@ export const contactSchema = Yup.object().shape({
     .email("آدرس ایمیل معتبر نیست")
     .required("آدرس ایمیل الزامی می باشد"),
   job: Yup.string().nullable(),
-  group: Yup.string().required("انتخاب گروه الزامی می باشد"),
+  group: Yup.string().nullable(),
 });
