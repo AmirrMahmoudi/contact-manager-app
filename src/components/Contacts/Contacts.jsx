@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Contact, Spinner } from "../";
 import { ContactContext } from "../../context/contactContext";
 import { CURRENTLINE, ORANGE, PINK } from "../../helpers/colors";
-import NotFound from "@assets/no-found.gif";
+import NotFound from "../../assets/no-found.gif";
 const Contacts = () => {
   const { filteredContacts, loading, deleteContact } =
     useContext(ContactContext);

@@ -1,5 +1,5 @@
 body {
-  background-color: #252a36;
+  background-color: #252a36 !important;
   font-family: "Vazir", "tahoma", "Ubuntu" !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

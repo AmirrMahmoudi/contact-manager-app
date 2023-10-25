@@ -6,7 +6,7 @@ import { Spinner } from "../";
 import { contactSchema } from "../../validations/contactValidation";
 import { ContactContext } from "../../context/contactContext";
 import { COMMENT, GREEN, PURPLE } from "../../helpers/colors";
-import MAN_TAKING_NOTE from "@assets/man-taking-note.png";
+import MAN_TAKING_NOTE from "../../assets/man-taking-note.png";
 const AddContact = () => {
   const { loading, groups, createContact } = useContext(ContactContext);
 

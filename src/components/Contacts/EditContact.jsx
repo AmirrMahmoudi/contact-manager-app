@@ -10,7 +10,7 @@ import { getContact, updateContact } from "../../services/contactService";
 import { ContactContext } from "../../context/contactContext";
 import { contactSchema } from "../../validations/contactValidation";
 import { COMMENT, ORANGE, PURPLE } from "../../helpers/colors";
-import MAN_TAKING_NOTE from "@assets/man-taking-note.png";
+import MAN_TAKING_NOTE from "../../assets/man-taking-note.png";
 
 const EditContact = () => {
   const { contactId } = useParams();
