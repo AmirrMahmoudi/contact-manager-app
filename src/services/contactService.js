@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const SERVER_URL = "http://localhost:9000";
-const SERVER_URL = "http://contactsapi.mahmoudi.dev";
+const SERVER_URL = "http://localhost:9000";
+// const SERVER_URL = "http://contactsapi.mahmoudi.dev";
 
 // @desc Get All Contacts
 // @route GET http://localhost:9000/contacts
